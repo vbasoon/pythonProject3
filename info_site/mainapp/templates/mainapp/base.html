@@ -37,20 +37,15 @@
                 <tr>
                     <!-- Siderbar left-->
                     <td valign="top" class="left-chapters">
-                        {% get_categories as categories %}
+
                         <ul id="leftchapters">
                             {% if categories_selected == 0 %}
                                 <li class="selected">All Categories</li>
                             {% else %}
                                 <li><a href="{% url 'home' %}">Всі категорії</a></li>
                             {% endif %}
-                            {% for c in categories %}
-                                {% if c.pk == categories_selected %}
-                                    <li class="selected">{{c.name}}</li>
-                                {% else %}
-                                    <li><a href="{{c.get_absolute_url}}">{{c.name}}</a></li>
-                                {% endif %}
-                            {% endfor %}
+
+                            {% show_categories '-name' categories_selected %}
 
                             <li class="share">
                                 <p>Youtube</p>

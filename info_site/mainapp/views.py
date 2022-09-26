@@ -15,10 +15,10 @@ menu = [
 
 def index(request):
     posts = News.objects.all()
-    categories = Category.objects.all()
+    #categories = Category.objects.all()
     context = {
         'posts': posts,
-        'categories': categories,
+        #'categories': categories,
         'menu': menu,
         'title': 'Головна сторінка',
         'categories_selected': 0,
@@ -73,11 +73,11 @@ def show_post(request, id):
 def show_category(request, category_id):
     posts = News.objects.filter(categories_id=category_id)
 
-    categories = Category.objects.all()
+    #categories = Category.objects.all()
 
     context = {
              'posts': posts,
-             'categories': categories,
+             #'categories': categories,
              'menu': menu,
              'title': 'Тема: ',
              'categories_selected': category_id,
