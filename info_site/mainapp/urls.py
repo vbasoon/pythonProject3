@@ -8,8 +8,8 @@ urlpatterns = [
     path('contact/', contact, name="contact"),
     path('login/', login, name="login"),
     path('register/', register, name="register"),
-    path('post/<int:id>', show_post, name="post"),
-    path('category/<int:category_id>', show_category, name="category"),
+    path('post/<slug:post_slug>', show_post, name="post"),
+    path('category/<slug:category_slug>', show_category, name="category"),
 
 ]
 

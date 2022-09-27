@@ -1,4 +1,4 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 
 from .models import *
@@ -21,7 +21,7 @@ def index(request):
         #'categories': categories,
         'menu': menu,
         'title': 'Головна сторінка',
-        'categories_selected': 0,
+        'categories_selected': 0
     }
     return render(request, 'mainapp/index.html', context)
 
@@ -50,8 +50,16 @@ def pageNotFound(request, exception):
     return HttpResponseNotFound('<h1>Сторінка не знайдена</h1>')
 
 
-def show_post(request, id):
-    return HttpResponse(f'Пост {id}')
+def show_post(request, post_slug):
+    post = get_object_or_404(News, slug=post_slug)
+
+    context = {
+        'post': post,
+        'menu': menu,
+        'title': post.title,
+        'categories_selected': post.categories_id,
+    }
+    return render(request, 'mainapp/post.html', context=context)
 
 
 # def show_category(request, category_id):
@@ -70,17 +78,17 @@ def show_post(request, id):
 #     }
 #     return render(request, 'mainapp/index.html', context)
 
-def show_category(request, category_id):
-    posts = News.objects.filter(categories_id=category_id)
+def show_category(request, category_slug):
+    posts = News.objects.filter(categories__slug=category_slug)
 
     #categories = Category.objects.all()
 
     context = {
              'posts': posts,
              #'categories': categories,
-             'menu': menu,
+             #'menu': menu,
              'title': 'Тема: ',
-             'categories_selected': category_id,
+             'categories_selected': category_slug,
     }
 
     return render(request, 'mainapp/index.html', context)
