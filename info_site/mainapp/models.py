@@ -18,12 +18,12 @@ class News(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('post', kwargs={'post_slug': self.slug})
+        return reverse('post', kwargs={'slug': self.slug})
 
     class Meta:
         verbose_name = "News"
         verbose_name_plural = "News"
-        ordering = ['time_create']
+        ordering = ['time_update']
 
 
 class Category(models.Model):
@@ -34,7 +34,7 @@ class Category(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('category', kwargs={'category_slug': self.slug})
+        return reverse('category', kwargs={'slug': self.slug})
 
     class Meta:
         verbose_name = "Category"

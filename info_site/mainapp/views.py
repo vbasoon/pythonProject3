@@ -1,7 +1,10 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from django.http import HttpResponse, HttpResponseNotFound, Http404
+from django.urls import reverse_lazy
+from django .views.generic import ListView, DetailView, CreateView
 
 from .models import *
+from .forms import *
 # Create your views here.
 
 menu = [
@@ -13,26 +16,70 @@ menu = [
 ]
 
 
-def index(request):
-    posts = News.objects.all()
-    #categories = Category.objects.all()
-    context = {
-        'posts': posts,
-        #'categories': categories,
-        'menu': menu,
-        'title': 'Головна сторінка',
-        'categories_selected': 0
-    }
-    return render(request, 'mainapp/index.html', context)
+class NewsHome(ListView):
+    model = News
+    template_name = 'mainapp/index.html'
+    context_object_name = 'posts'
+    # extra_context = {'title': 'Головна сторінка'}
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['menu'] = menu
+        context['title'] = 'Головна сторінка'
+        context['categories_selected'] = 0
+        return context
+
+    def get_queryset(self):
+        return News.objects.filter(is_published=True)
+
+
+class AddPage(CreateView):
+    form_class = AddNewsForm
+    template_name = 'mainapp/addpage.html'
+    success_url = reverse_lazy('home')
+    #context_object_name = 'posts'
+    # extra_context = {'title': 'Головна сторінка'}
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['menu'] = menu
+        context['title'] = 'Додати новину'
+        return context
+
+
+
+# def index(request):
+#     posts = News.objects.filter(is_published=True)
+#     #categories = Category.objects.all()
+#     context = {
+#         'posts': posts,
+#         #'categories': categories,
+#         'menu': menu,
+#         'title': 'Головна сторінка',
+#         'categories_selected': 0
+#     }
+#     return render(request, 'mainapp/index.html', context)
+#
 
 def about(request):
     return render(request, 'mainapp/about.html', {'menu': menu, 'title': 'Про Нас'})
 
 
-def add_page(request):
-    return HttpResponse('Додати новину')
-
+# def add_page(request):
+#     if request.method == 'POST':
+#         form = AddNewsForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             #print(form.cleaned_data)
+#             try:
+#                 News.objects.create(**form.cleaned_data)
+#                 return redirect('home')
+#             except:
+#                 form.add_error(None, 'Помилка додавання запису')
+#
+#     else:
+#         form = AddNewsForm()
+#     return render(request, 'mainapp/addpage.html', {'form': form, 'menu': menu, 'title': 'Додати новину'})
+#
 
 def contact(request):
     return HttpResponse('Контакти')
@@ -50,16 +97,16 @@ def pageNotFound(request, exception):
     return HttpResponseNotFound('<h1>Сторінка не знайдена</h1>')
 
 
-def show_post(request, post_slug):
-    post = get_object_or_404(News, slug=post_slug)
-
-    context = {
-        'post': post,
-        'menu': menu,
-        'title': post.title,
-        'categories_selected': post.categories_id,
-    }
-    return render(request, 'mainapp/post.html', context=context)
+# def show_post(request, post_slug):
+#     post = get_object_or_404(News, slug=post_slug)
+#
+#     context = {
+#         'post': post,
+#         'menu': menu,
+#         'title': post.title,
+#         'categories_selected': post.categories_id,
+#     }
+#     return render(request, 'mainapp/post.html', context=context)
 
 
 # def show_category(request, category_id):
@@ -78,20 +125,52 @@ def show_post(request, post_slug):
 #     }
 #     return render(request, 'mainapp/index.html', context)
 
-def show_category(request, category_slug):
-    posts = News.objects.filter(categories__slug=category_slug)
 
-    #categories = Category.objects.all()
+class ShowPost(DetailView):
+    model = News
+    template_name = 'mainapp/post.html'
+    slug_url_kwargs = 'slug'
+    context_object_name = "post"
 
-    context = {
-             'posts': posts,
-             #'categories': categories,
-             #'menu': menu,
-             'title': 'Тема: ',
-             'categories_selected': category_slug,
-    }
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = context['post']
+        context['menu'] = menu
+        return context
 
-    return render(request, 'mainapp/index.html', context)
+
+
+
+class NewsCategory(ListView):
+    model = News
+    template_name = 'mainapp/index.html'
+    context_object_name = 'posts'
+    allow_empty = False
+
+    def get_queryset(self):
+        return News.objects.filter(categories__slug=self.kwargs['slug'], is_published=True)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Категорія: ' + str(context['posts'][0].categories)
+        context['menu'] = menu
+        context['categories_selected'] = context['posts'][0].categories_id
+        return context
+
+# def show_category(request, category_slug):
+#     posts = News.objects.filter(categories__slug=category_slug)
+#
+#     #categories = Category.objects.all()
+#
+#     context = {
+#              'posts': posts,
+#              #'categories': categories,
+#              #'menu': menu,
+#              'title': 'Тема: ',
+#              'categories_selected': category_slug,
+#     }
+#
+#     return render(request, 'mainapp/index.html', context)
 # def categories(request, cat):
 #     print(request.GET)
 #     return HttpResponse(f"<h1>Статті за категоріями</h1><p>{cat}</p>")
