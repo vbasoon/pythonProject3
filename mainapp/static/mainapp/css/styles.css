@@ -9,7 +9,7 @@ html, body {
 }
 
 h1 {
-color: red;
+color: blue;
 }
 
 h2 {
@@ -392,13 +392,14 @@ ul.lang-list li a:hover {color: #fdc073;}
 }
 
 .form-input {
-    width: 300px;
+    width: 400px;
     font-size: 16px;
+    color: red;
 }
 
 .form-label {
     display: inline-block;
-    min-width: 150px;
+    color: red;
     vertical-align: top;
 }
 

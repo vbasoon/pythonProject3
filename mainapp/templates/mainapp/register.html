@@ -1,0 +1,31 @@
+{% extends 'mainapp/base.html' %}
+{% block content%}
+
+<h1>{{title}}</h1>
+
+<!--{% if messages %}-->
+
+<!--    {% for message in messages %}-->
+<!--        {% if message in messages %}-->
+<!--            {% if message.tags == 'error' %}-->
+<!--                <p>There is an error...</p>-->
+<!--                {{ message }}-->
+
+
+<!--            {% endif %}-->
+<!--        {% endif %}-->
+<!--    {% endfor %}-->
+<!--{% endif %}-->
+
+<form method="POST">
+    {% csrf_token %}
+
+<!--    {{ form.as_p }}-->
+        {% for f in form%}
+    <p><label class="form-label" for="{{ f.id_for_label }}">{{f.label}}</label>{{ f }}</p>
+<div class="form-error">{{ f.errors }}</div>
+    {% endfor %}
+    <button type="submit">Реєстрація</button>
+</form>
+
+{% endblock%}

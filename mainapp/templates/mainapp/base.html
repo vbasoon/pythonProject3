@@ -1,6 +1,7 @@
+<!DOCTYPE html>
 {% load static %}
 {% load news_tags %}
-<!DOCTYPE html>
+
 <html lang="en">
 <head>
     <title>{{title}}</title>
@@ -23,12 +24,16 @@
                             </a>
                         </li>
                         {% for m in menu %}
-                            {% if not forloop.last %}
-                                <li ><a href="{% url m.url_name %}">{{m.title}}</a></li>
-                            {% else %}
+
                             <li><a href="{% url m.url_name %}">{{m.title}}</a></li>
-                            {% endif %}
+
                         {% endfor %}
+                        {% if request.user.is_authenticated %}
+                        <li class="last"> {{user.username}} | <a href="{% url 'logout' %}">Вихід</a>
+                        {% else %}
+                        <li class="last"><a href="{% url 'register' %}">Register</a> | <a href="{% url 'login' %}">Login</a></li>
+
+                        {% endif %}
                     </ul>
                     <div class="clear"></div>
                 </div>
@@ -38,11 +43,13 @@
                     <!-- Siderbar left-->
                     <td valign="top" class="left-chapters">
                         <ul id="leftchapters">
+
                             {% if categories_selected == 0 %}
                                 <li class="selected">All Categories</li>
                             {% else %}
                                 <li><a href="{% url 'home' %}">Всі категорії</a></li>
                             {% endif %}
+
                             {% for c in categories %}
                                 {% if c.pk == categories_selected %}
                                     <li class="selected">{{c.name}}</li>
@@ -55,6 +62,7 @@
                                 <p>Youtube</p>
                                 <a class="share-yt" href="https://www.youtube.com" target="_blank" rel="nofollow"></a>
                             </li>
+
                         </ul>
                     </td>
                     <!-- Sidebar left end-->
@@ -69,7 +77,11 @@
                             {% if page_obj.has_other_pages %}
                             <nav class="list-pages">
                                 <ul>
+
                                     {% if page_obj.has_previous %}
+                                    <li class="page-num">
+                                        <a href="?page=1">first</a>
+                                    </li>
                                     <li class="page-num">
                                         <a href="?page={{ page_obj.previous_page_number }}">&lt;</a>
                                     </li>
@@ -77,9 +89,7 @@
                                     {% for p in paginator.page_range %}
                                     {% if page_obj.number == p %}
                                     <li class="page-num page-num-selected">{{ p }}</li>
-
                                         {% elif p >= page_obj.number|add:-2 and p <= page_obj.number|add:2 %}
-
                                     <li class="page-num">
                                         <a href="?page={{p}}">{{ p }}</a>
                                     </li>
@@ -89,14 +99,28 @@
                                     <li class="page-num">
                                         <a href="?page={{ page_obj.next_page_number }}">&gt;</a>
                                     </li>
+                                    <li class="page-num">
+                                        <a href="?page={{ page_obj.paginator.num_pages }}">last</a>
+                                    </li>
+
                                     {% endif %}
                                 </ul>
                             </nav>
+
                             {% endif %}
+
                         </div>
                     <!--Content block end-->
 
                     </td>
+                    <td valign="top" class="left-chapters">
+
+
+
+
+
+                    </td>
+
                 </tr>
 
             </table>

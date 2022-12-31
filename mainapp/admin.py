@@ -1,6 +1,15 @@
 from django.contrib import admin
 from .models import *
 # Register your models here.
+# from ckeditor_uploader.widgets import CKEditorUploadingWidget
+
+
+# class PostAdminForm(forms.ModelForm):
+#     photo = forms.CharField(widget=CKEditorUploadingWidget())
+#
+#     class Meta:
+#         model = News
+#         fields = '__all__'
 
 
 class NewsAdmin(admin.ModelAdmin):
@@ -10,6 +19,7 @@ class NewsAdmin(admin.ModelAdmin):
     list_editable = ('is_published',)
     list_filter = ('is_published', 'time_create')
     prepopulated_fields = {"slug": ("title",)}
+    # form = AddNewsForm
 
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -21,3 +31,4 @@ class CategoryAdmin(admin.ModelAdmin):
 
 admin.site.register(News, NewsAdmin)
 admin.site.register(Category, CategoryAdmin)
+admin.site.register(Blog)

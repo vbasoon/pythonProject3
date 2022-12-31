@@ -15,7 +15,7 @@
         <h2>{{p.title}}</h2>
 
         {% autoescape on %}
-        <p>{{p.content|linebreaks|truncatewords:18}}</p>
+        <p>{{p.content|safe|truncatewords:18}}</p>
         {% endautoescape %}
             <div class="clear"></div>
             <p class="link-read-post"><a href="{{ p.get_absolute_url }}">Читати повністю</a></p>
